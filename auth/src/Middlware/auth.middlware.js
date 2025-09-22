@@ -14,11 +14,13 @@ const authmiddleware = async (req, res, next) => {
     } catch (err) {
       return res.status(401).json({ message: "Unauthorized: Invalid Token" });
     }
-    const user = await UserModel.findById(decoded.id);
+    const user = await UserModel.findById(decoded.id); //only find karne hae user ko fetch nahi kar hae 
     if (!user) {
       return res.status(401).json({ message: "Unauthorized User Not Found" });
     }
-    req.user = user;
+    req.user = user; //  ye token se mila hua hae 
+    // console.log(user._id)//68d13addfb8f3ee049ae5100
+    // console.log(user.id) //new ObjectId('68d13addfb8f3ee049ae5100')
     next();
   } catch (error) {
     console.log("Auth Middleware Error:", error);

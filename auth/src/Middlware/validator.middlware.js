@@ -30,4 +30,14 @@ const loginValidator = [
     respondWithUserValidator 
 ]   
 
-module.exports = {registerValidator,loginValidator}   
+const addressValidator = [
+    body('street').notEmpty().withMessage('Street is required'),
+    body('city').notEmpty().withMessage('City is required'),
+    body('state').notEmpty().withMessage('State is required'),
+    body('country').notEmpty().withMessage('Country is required'),
+    body('zip').isNumeric().withMessage('Zip must be a number'),
+    body('phone').isMobilePhone().withMessage('Invalid phone number'),
+    respondWithUserValidator    
+]
+
+module.exports = {registerValidator,loginValidator,addressValidator}   

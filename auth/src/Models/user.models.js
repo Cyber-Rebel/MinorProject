@@ -1,4 +1,3 @@
-const e = require("express");
 const mongoose = require("mongoose");
 
 const addressesSchema = new mongoose.Schema({
@@ -7,6 +6,8 @@ const addressesSchema = new mongoose.Schema({
   state: { type: String },
   country: { type: String },
   zip: { type: Number },
+  phone: { type: String },
+  isDefault: { type: Boolean, default: false },
 });
 
 const userSchema = new mongoose.Schema({
@@ -22,7 +23,7 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "seller"],
     default: "user",
   },
-  addresses: [addressesSchema],
+  addresses: [addressesSchema], // id me _id automatically add ho jata hae and address me aap multiple address add kar sakte hae because ya array hae
 });
 
 const UserModel = mongoose.model("user", userSchema);

@@ -1,7 +1,7 @@
 const UserModel = require("../Models/user.models.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-// const redis = require("../db/redis.js");
+const redis = require("../db/redis.js");
  const register = async (req, res) => {
   try {
     const { username, email, password, fullName:{firstName,lastName} } = req.body
@@ -32,7 +32,7 @@ const jwt = require("jsonwebtoken");
      res.cookie('token',token,{
         httpOnly:true,
         secure:true,// client side   javascript hae wo ab cookie ko access kabhi kar nahi sakti jo sirf apka server hae sirf wahi cookie ke data acces kar sakt ahae clear bhi  
-        maxage:24*60*60*1000 // 1 day  ekdin tak data cookie data hoga  
+        maxAge:24*60*60*1000 // 1 day  ekdin tak data cookie data hoga  
      })
 
 
@@ -74,7 +74,7 @@ const login = async(req,res )=>{
           res.cookie('token',token,{
              httpOnly:true,
              secure:true,// client side   javascript hae wo ab cookie ko access kabhi kar nahi sakti jo sirf apka server hae sirf wahi cookie ke data acces kar sakt ahae clear bhi  
-             maxage:24*60*60*1000 // 1 day  ekdin tak data cookie data hoga  
+             maxAge:24*60*60*1000 // 1 day  ekdin tak data cookie data hoga  
           })
           res.status(200).json({user:{
             id: user._id,
@@ -124,4 +124,84 @@ catch(error){
 }
 
 }
-module.exports = {register,login,getcurrentuser,logoutUser}
+
+const getAddresses = async (req, res) => {
+  try{
+    const id = req.user.id
+    const user = await UserModel.findById(id)
+    if(!user){
+      return res.status(404).json({message:'User not found'})
+    }
+
+    res.status(200).json({
+      message:'Addresses fetched successfully',
+      addresses:user.addresses || []}) // agar user ke paas koi address nahi hae to empty array return kar dena
+
+  }catch(error){
+    console.error('Error fetching addresses:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+
+}
+
+const addAddress= async (req, res) => {
+
+  try{
+    const id = req.user.id
+    const user = await UserModel.findById(id)
+    if(!user){
+      return res.status(404).json({message:'User not found'})
+    }
+    const {street,city,state,country,zip,phone} = req.body
+    const newAddress = {
+      street,city,state,country,zip,phone
+    }
+    // If this is the first address, set it as default
+    if(user.addresses.length === 0){
+      newAddress.isDefault = true
+    }
+    user.addresses.push(newAddress)
+    await user.save()
+    res.status(201).json({
+      message:'Address added successfully',
+      address:newAddress
+    })  
+
+  }catch(error){
+    console.error('Error adding address:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+
+}
+const deleteAddress= async (req, res) =>{
+ try{
+  const id = req.user.id
+  const { addressId } = req.params
+
+
+  
+  const user = await  UserModel.findOneAndUpdate({_id:id}, //1. Filter: find the user with this ID
+    {$pull:{addresses:{_id:addressId}}},  // 2. Update: remove an address from the addresses array
+    {new:true} // 3. Options: return the updated document instead of the old one  // updated document return karne ke liye 
+    )
+  if(!user){
+    return res.status(404).json({message:'User not found'})
+  }
+  res.status(200).json({
+    message:'Address deleted successfully',
+    addresses:user.addresses
+  })
+ 
+
+
+ }catch(err){
+  console.log(err)
+    res.status(500).json({
+      message:'Internal server error '
+    })
+ }
+
+}
+
+
+module.exports = {register,login,getcurrentuser,logoutUser,getAddresses,addAddress,deleteAddress  }

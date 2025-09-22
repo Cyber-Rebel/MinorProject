@@ -3,10 +3,12 @@ const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const app = require('../src/index')
 const User = require('../src/Models/user.models')
+const mongoose = require('mongoose')
 
 const {MongoMemoryServer} = require('mongodb-memory-server')
 
 
+let mongod;
 beforeAll(async () => {
 // This will create an new instance of "MongoMemoryServer" and automatically start it
  mongod = await MongoMemoryServer.create();
