@@ -1,0 +1,7 @@
+
+> cart@1.0.0 start
+> node server.js
+
+[dotenv@17.2.3] injecting env (3) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+Server running on port 3002
+MongoDB Connected: localhost

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { io } from 'socket.io-client';
+import { API_BASE_URLS } from '../api/config';
 
 const AIChatBot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,6 +15,7 @@ const AIChatBot = () => {
   const [inputValue, setInputValue] = useState('');
   const [isConnected, setIsConnected] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const messagesEndRef = useRef(null);
   const socketRef = useRef(null);
   const { isAuthenticated } = useSelector((state) => state.auth);
@@ -26,20 +28,29 @@ const AIChatBot = () => {
   // Initialize socket connection
   useEffect(() => {
     if (isAuthenticated && isOpen) {
-      // Connect to AI buddy server
-      socketRef.current = io('http://localhost:3005', {
+      // Connect to AI buddy server (Vite env var optional)
+      const AI_URL = import.meta.env.VITE_AI_BUDDY_URL || API_BASE_URLS.AI_BUDDY;
+
+      socketRef.current = io(AI_URL, {
         withCredentials: true,
         transports: ['websocket', 'polling'],
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+        reconnectionDelayMax: 5000,
       });
 
       socketRef.current.on('connect', () => {
         console.log('Connected to AI buddy');
         setIsConnected(true);
+        setErrorMessage(null);
       });
 
-      socketRef.current.on('disconnect', () => {
-        console.log('Disconnected from AI buddy');
+      socketRef.current.on('disconnect', (reason) => {
+        console.log('Disconnected from AI buddy', reason);
         setIsConnected(false);
+        if (reason === 'io server disconnect') {
+          setErrorMessage('Disconnected by server. Please refresh or re-login.');
+        }
       });
 
       socketRef.current.on('message', (msg) => {
@@ -58,6 +69,19 @@ const AIChatBot = () => {
       socketRef.current.on('connect_error', (error) => {
         console.error('Connection error:', error);
         setIsConnected(false);
+        setErrorMessage(
+          error?.message === 'Authentication error'
+            ? 'Authentication failed. Please login again.'
+            : 'Cannot connect to AI service. Please try again later.'
+        );
+      });
+
+      socketRef.current.io.on('reconnect_attempt', (attempt) => {
+        console.log('Reconnection attempt', attempt);
+      });
+
+      socketRef.current.io.on('reconnect_failed', () => {
+        setErrorMessage('Reconnection failed. Please refresh the page.');
       });
 
       return () => {
@@ -147,6 +171,9 @@ const AIChatBot = () => {
                   ></span>
                   {isConnected ? 'Online' : 'Connecting...'}
                 </div>
+                {errorMessage && (
+                  <div className="text-xs text-yellow-200 mt-1">{errorMessage}</div>
+                )}
               </div>
             </div>
           </div>

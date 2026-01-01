@@ -8,7 +8,9 @@ const model = new ChatGoogleGenerativeAI({
  model:"gemini-2.0-flash",
  temperature:0.7,
     })
-    const graph = new StateGraph(MessagesAnnotation)
+
+
+const graph = new StateGraph(MessagesAnnotation)
     .addNode('tools',async(state,config)=>{
       const lastMessage = state.messages[state.messages.length-1]
       const toolcall =  lastMessage.tool_calls 

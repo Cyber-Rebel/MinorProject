@@ -6,9 +6,17 @@ const cookie = require('cookie'); // cookie and cookie-parser are different pack
 const agent = require('../agent/agent.js')
 async function initSocketServer(httpServer) {
 
+    // Allow origins from environment variable ALLOWED_ORIGINS (comma-separated), fallback to common dev ports
+    const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:5173,http://localhost:5174,http://localhost:5175')
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean);
+
+    console.log('Socket allowed origins:', allowedOrigins);
+
     const io = new Server(httpServer,{
         cors: {
-            origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
+            origin: allowedOrigins,
             methods: ['GET', 'POST'],
             credentials: true
         }

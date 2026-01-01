@@ -1,0 +1,8 @@
+[dotenv@17.2.2] injecting env (7) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+[dotenv@17.2.2] injecting env (0) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.2.2] injecting env (0) from .env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Server is running on port 3001
+Connected to MongoDB
+Connected to RabbitMQ
+Broker connected, starting the app

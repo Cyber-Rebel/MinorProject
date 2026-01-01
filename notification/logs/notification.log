@@ -1,0 +1,16 @@
+[dotenv@17.2.3] injecting env (5) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+[dotenv@17.2.3] injecting env (0) from .env -- tip: 🗂️ backup and recover secrets: https://dotenvx.com/ops
+[dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Notification service is running on port 3006
+Connected to RabbitMQ
+Broker connected, starting the app
+Error connecting to email server: Error: invalid_grant: Bad Request
+    at /home/cyber-rebel/Desktop/Mino-Project /notification/node_modules/nodemailer/lib/xoauth2/index.js:323:33
+    at PassThrough.<anonymous> (/home/cyber-rebel/Desktop/Mino-Project /notification/node_modules/nodemailer/lib/xoauth2/index.js:392:20)
+    at Object.onceWrapper (node:events:632:28)
+    at PassThrough.emit (node:events:518:28)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  code: 'EAUTH',
+  command: 'AUTH XOAUTH2'
+}
