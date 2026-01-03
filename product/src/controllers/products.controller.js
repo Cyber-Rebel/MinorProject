@@ -10,8 +10,8 @@ const createProduct = async (req, res) => {
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
-
-    const { title, description, priceAmount, priceCurrency = 'INR' } = req.body;
+// frontend add here 
+    const { title, description, priceAmount, priceCurrency = 'INR', stock=1 } = req.body;
 
     const seller = req.user && req.user.id;
     if (!seller) {
@@ -41,6 +41,7 @@ const createProduct = async (req, res) => {
       price,
       seller,
       images,
+      stock
     });
 
     const saved = await product.save(); 

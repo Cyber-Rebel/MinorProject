@@ -13,6 +13,7 @@ const AddProduct = () => {
     description: '',
     priceAmount: '',
     priceCurrency: 'INR',
+    stock: '1',
   });
   const [images, setImages] = useState([]);
   const [imagePreviews, setImagePreviews] = useState([]);
@@ -97,6 +98,7 @@ const AddProduct = () => {
     formDataToSend.append('description', formData.description);
     formDataToSend.append('priceAmount', formData.priceAmount);
     formDataToSend.append('priceCurrency', formData.priceCurrency);
+    formDataToSend.append('stock', formData.stock || '1');
 
     images.forEach((image) => {
       formDataToSend.append('images', image);
@@ -178,8 +180,8 @@ const AddProduct = () => {
               />
             </div>
 
-            {/* Price */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Price and Stock */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <label htmlFor="priceAmount" className="block text-sm font-semibold text-gray-700 mb-2">
                   Price *
@@ -215,6 +217,23 @@ const AddProduct = () => {
                   <option value="USD">USD ($)</option>
                   <option value="EUR">EUR (€)</option>
                 </select>
+              </div>
+              <div>
+                <label htmlFor="stock" className="block text-sm font-semibold text-gray-700 mb-2">
+                  Stock *
+                </label>
+                <input
+                  type="number"
+                  id="stock"
+                  name="stock"
+                  value={formData.stock}
+                  onChange={handleChange}
+                  required
+                  min="0"
+                  step="1"
+                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  placeholder="0"
+                />
               </div>
             </div>
           </div>

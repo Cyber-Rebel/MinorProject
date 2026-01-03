@@ -27,6 +27,18 @@ export const sellerAPI = {
     return response.data;
   },
 
+  // Get single order details
+  getOrderById: async (orderId) => {
+    const response = await sellerApi.get(`/api/seller/dashbord/orders/${orderId}`);
+    return response.data;
+  },
+
+  // Update order status
+  updateOrderStatus: async (orderId, status) => {
+    const response = await sellerApi.patch(`/api/seller/dashbord/orders/${orderId}/status`, { status });
+    return response.data;
+  },
+
   // Get seller's products from dashboard
   getProducts: async () => {
     const response = await sellerApi.get('/api/seller/dashbord/products');
